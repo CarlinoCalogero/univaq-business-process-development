@@ -1,0 +1,15 @@
+<process-application
+        xmlns="http://www.camunda.org/schema/1.0/ProcessApplication"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <process-archive name="Demo: Deploying process error">
+        <resource>processes/camunda_exam_business_process.bpmn</resource>
+        <resource>templates/availabilityRequestEnvelope.ftl</resource>
+        <resource>templates/posterRequestConfirmationEnvelope.ftl</resource>
+        <resource>templates/requestFile.ftl</resource>
+        <resource>templates/posterRequestCancelEnvelope.ftl</resource>
+        <properties>
+            <property name="isDeleteUponUndeploy">false</property>
+            <property name="isScanForProcessDefinitions">false</property>
+        </properties>
+    </process-archive>
+</process-application>
