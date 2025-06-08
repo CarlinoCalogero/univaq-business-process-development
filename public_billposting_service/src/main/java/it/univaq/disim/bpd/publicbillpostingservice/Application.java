@@ -8,7 +8,6 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @EnableProcessApplication // Without this annotation templates and bpmn files in the resource folder won't
 							// be deployed
-//Add ComponentScan to include the package of your RESTController
 @ComponentScan(basePackages = { "it.univaq.disim.bpd.publicbillpostingservice.config",
 		"it.univaq.disim.bpd.publicbillpostingservice.delegate",
 		"it.univaq.disim.bpd.publicbillpostingservice.endpoint",

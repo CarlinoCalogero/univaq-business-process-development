@@ -12,8 +12,6 @@ import java.util.Map;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +26,8 @@ import it.univaq.disim.bpd.publicbillpostingservice.model.Zone;
 @Component("requestFileWriterDelegate")
 public class RequestFileWriter extends BaseDelegate implements JavaDelegate {
 
-	private static final Logger logger = LoggerFactory.getLogger(RequestFileWriter.class);
+	// private static final Logger logger =
+	// LoggerFactory.getLogger(RequestFileWriter.class);
 
 	@Autowired
 	private Configuration freemarkerConfig;
@@ -72,11 +71,11 @@ public class RequestFileWriter extends BaseDelegate implements JavaDelegate {
 
 			try (Writer out = new FileWriter(outputFile)) {
 				template.process(model, out);
-				logger.info("✅ File written to: {}", outputFile.getAbsolutePath());
+				// logger.info("File written to: {}", outputFile.getAbsolutePath());
 			}
 
 		} catch (Exception e) {
-			logger.error("Failed to generate request file", e);
+			// logger.error("Failed to generate request file", e);
 			throw new RuntimeException("Failed to generate request file", e);
 		}
 	}

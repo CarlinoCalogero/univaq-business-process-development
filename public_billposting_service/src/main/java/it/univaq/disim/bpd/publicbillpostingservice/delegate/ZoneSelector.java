@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import it.univaq.disim.bpd.publicbillpostingservice.model.CityPrice;
@@ -21,11 +19,12 @@ import it.univaq.disim.bpd.publicbillpostingservice.model.Zone;
 @Component("zoneSelectorDelegate")
 public class ZoneSelector extends BaseDelegate implements JavaDelegate {
 
-	private static final Logger logger = LoggerFactory.getLogger(ZoneSelector.class);
+	// private static final Logger logger =
+	// LoggerFactory.getLogger(ZoneSelector.class);
 
 	@Override
 	public void execute(DelegateExecution execution) {
-		logger.info("📍 ZoneSelector Delegate Invoked");
+		// logger.info("ZoneSelector Delegate Invoked");
 
 		PosterAvailabilityRequest request = getRequiredVariable(execution, "posterAvailabilityRequest",
 				PosterAvailabilityRequest.class);
@@ -37,24 +36,24 @@ public class ZoneSelector extends BaseDelegate implements JavaDelegate {
 
 		switch (request.getSelectionStrategy()) {
 		case CHEAPEST_FIRST:
-			logger.info("Using CHEAPEST_FIRST strategy");
+			// logger.info("Using CHEAPEST_FIRST strategy");
 			selectedZonesMap = selectZonesByCheapest(allZones, request);
 			break;
 		case BEST_VALUE:
-			logger.info("Using BEST_VALUE strategy");
+			// logger.info("Using BEST_VALUE strategy");
 			selectedZonesMap = selectZonesByBestValue(allZones, request);
 			break;
 		case EQUAL_BUDGET:
-			logger.info("Using EQUAL_BUDGET strategy");
+			// logger.info("Using EQUAL_BUDGET strategy");
 			selectedZonesMap = selectZonesWithEqualBudget(allZones, request);
 			break;
 		case RANDOM:
-			logger.info("Using RANDOM strategy");
+			// logger.info("Using RANDOM strategy");
 			selectedZonesMap = selectZonesRandomly(allZones, request);
 			break;
 		case GREEDY:
 		default:
-			logger.info("Using GREEDY strategy");
+			// logger.info("Using GREEDY strategy");
 			selectedZonesMap = selectZonesGreedy(allZones, request);
 		}
 
@@ -63,12 +62,12 @@ public class ZoneSelector extends BaseDelegate implements JavaDelegate {
 		execution.setVariable("selectedZones", selectedZonesMap);
 		execution.setVariable("totalPrice", totalPrice);
 
-		logger.info("✅ Selected Zones by City:");
-		selectedZonesMap.forEach((city, zones) -> {
-			logger.info("  - {}", city);
-			zones.forEach(zone -> logger.info("     • {}", zone));
-		});
-		logger.info("💶 Total price: €{}", totalPrice);
+		// logger.info("Selected Zones by City:");
+		// selectedZonesMap.forEach((city, zones) -> {
+		// logger.info(" - {}", city);
+		// zones.forEach(zone -> logger.info("\n{}", zone));
+		// });
+		// logger.info("Total price: €{}", totalPrice);
 	}
 
 	// Greedy strategy (original)
@@ -81,7 +80,7 @@ public class ZoneSelector extends BaseDelegate implements JavaDelegate {
 		return selectZones(zones, request, Comparator.comparingDouble(Zone::getPrice));
 	}
 
-	// Best Value (Assumes Zone has getScore() method)
+	// Best Value
 	private Map<String, List<Zone>> selectZonesByBestValue(List<Zone> zones, PosterAvailabilityRequest request) {
 		return selectZones(zones, request, Comparator.<Zone>comparingDouble(z -> z.getId() / z.getPrice()).reversed());
 	}

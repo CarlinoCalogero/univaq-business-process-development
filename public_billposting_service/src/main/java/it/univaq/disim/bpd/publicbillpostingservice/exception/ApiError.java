@@ -30,7 +30,10 @@ public class ApiError {
 		this.requestMethod = requestMethod;
 	}
 
-	// Getters and setters omitted for brevity
+	public void setStatusCode(int statusCode) {
+		this.statusCode = statusCode;
+	}
+
 	public HttpStatus getStatus() {
 		return status;
 	}

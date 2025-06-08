@@ -9,8 +9,6 @@ import javax.validation.Valid;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.runtime.MessageCorrelationResultWithVariables;
 import org.camunda.bpm.engine.runtime.ProcessInstanceWithVariables;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import it.univaq.disim.bpd.publicbillpostingservice.delegate.RequestCancelNotifier;
 import it.univaq.disim.bpd.publicbillpostingservice.exception.InvalidRequestException;
 import it.univaq.disim.bpd.publicbillpostingservice.exception.ResourceNotFoundException;
 import it.univaq.disim.bpd.publicbillpostingservice.model.Bill;
@@ -31,7 +28,8 @@ import it.univaq.disim.bpd.publicbillpostingservice.model.Zone;
 @RequestMapping("/poster-availability")
 public class RESTController {
 
-	private static final Logger logger = LoggerFactory.getLogger(RequestCancelNotifier.class);
+	// private static final Logger logger =
+	// LoggerFactory.getLogger(RequestCancelNotifier.class);
 
 	private final String PROCESS_KEY = "PublicBillpostingService";
 
@@ -41,7 +39,7 @@ public class RESTController {
 	@PostMapping("/request")
 	public ResponseEntity<?> postPosterAvailabilityRequest(@RequestBody @Valid PosterAvailabilityRequest request) {
 
-		logger.info("Poster availability request received!");
+		// logger.info("Poster availability request received!");
 
 		ProcessInstanceWithVariables instance = runtimeService.createProcessInstanceByKey(PROCESS_KEY)
 				.setVariableLocal("posterAvailabilityRequest", request).executeWithVariablesInReturn();
@@ -87,7 +85,7 @@ public class RESTController {
 	@PostMapping("/decide")
 	public ResponseEntity<?> postPosterRequestDecision(@RequestBody @Valid PosterRequestDecision decision) {
 
-		logger.info("Poster request decision received!");
+		// logger.info("Poster request decision received!");
 
 		MessageCorrelationResultWithVariables instance = runtimeService
 				.createMessageCorrelation("poster-request-decision")
@@ -99,7 +97,7 @@ public class RESTController {
 		responseBody.put("invoiceNumber", "");
 		responseBody.put("amountDue", null);
 
-		logger.info("Decision: {}", decision.getDecision());
+		// logger.info("Decision: {}", decision.getDecision());
 
 		if (decision.getDecision().equals("confirm")) {
 
@@ -112,20 +110,15 @@ public class RESTController {
 				throw new IllegalStateException("Order information is missing after confirmation.");
 			}
 
-			logger.info("orderInformation: ", orderInformation);
-			logger.info("Poster request confirmed from inside!");
+			// logger.info("orderInformation: {}", orderInformation);
 
 			responseBody.put("accountHolder", orderInformation.getAccountHolder());
 			responseBody.put("invoiceNumber", orderInformation.getInvoiceNumber());
 			responseBody.put("amountDue", orderInformation.getAmountDue());
 
-		} else {
-
-			logger.info("Poster request cancelled from inside!");
-
 		}
 
-		logger.info("Now returning control!");
+		// logger.info("Now returning control!");
 
 		return ResponseEntity.ok(responseBody);
 

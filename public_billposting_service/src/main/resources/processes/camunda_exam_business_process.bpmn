@@ -4,11 +4,6 @@
     <bpmn:endEvent id="Event_1fbyf7h">
       <bpmn:incoming>Flow_16lqhso</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:scriptTask id="PrintPosterAvailabilityRequest" name="Print Poster Availability Request" scriptFormat="javascript">
-      <bpmn:incoming>Flow_1n3q7b4</bpmn:incoming>
-      <bpmn:outgoing>Flow_0uzi8og</bpmn:outgoing>
-      <bpmn:script>java.lang.System.out.println("\n" + execution.getVariable("posterAvailabilityRequest") + "\n");</bpmn:script>
-    </bpmn:scriptTask>
     <bpmn:serviceTask id="GetUserData" name="Get User Data">
       <bpmn:extensionElements>
         <camunda:connector>
@@ -23,18 +18,12 @@
       <bpmn:incoming>Flow_0bqszhx</bpmn:incoming>
       <bpmn:outgoing>Flow_0u5u962</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:scriptTask id="PrintUserData" name="Print User Data" scriptFormat="javascript">
-      <bpmn:incoming>Flow_0u5u962</bpmn:incoming>
-      <bpmn:outgoing>Flow_04pus9i</bpmn:outgoing>
-      <bpmn:script>java.lang.System.out.println("\n" + execution.getVariable("userData") + "\n");</bpmn:script>
-    </bpmn:scriptTask>
-    <bpmn:sequenceFlow id="Flow_0u5u962" sourceRef="GetUserData" targetRef="PrintUserData" />
+    <bpmn:sequenceFlow id="Flow_0u5u962" sourceRef="GetUserData" targetRef="Gateway_00w3col" />
     <bpmn:parallelGateway id="Gateway_1xgojrv">
-      <bpmn:incoming>Flow_0uzi8og</bpmn:incoming>
+      <bpmn:incoming>Flow_1n3q7b4</bpmn:incoming>
       <bpmn:outgoing>Flow_0bqszhx</bpmn:outgoing>
       <bpmn:outgoing>Flow_0rgd867</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:sequenceFlow id="Flow_0uzi8og" sourceRef="PrintPosterAvailabilityRequest" targetRef="Gateway_1xgojrv" />
     <bpmn:sequenceFlow id="Flow_0bqszhx" sourceRef="Gateway_1xgojrv" targetRef="GetUserData" />
     <bpmn:serviceTask id="GetZoneData" name="Get Zone Data">
       <bpmn:extensionElements>
@@ -50,32 +39,19 @@
       <bpmn:incoming>Flow_0rgd867</bpmn:incoming>
       <bpmn:outgoing>Flow_0vxx5i8</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:scriptTask id="PrintZoneData" name="Print Zone Data" scriptFormat="javascript">
-      <bpmn:incoming>Flow_0vxx5i8</bpmn:incoming>
-      <bpmn:outgoing>Flow_1nqt53o</bpmn:outgoing>
-      <bpmn:script>java.lang.System.out.println("\n" + execution.getVariable("zoneData") + "\n");</bpmn:script>
-    </bpmn:scriptTask>
-    <bpmn:sequenceFlow id="Flow_0vxx5i8" sourceRef="GetZoneData" targetRef="PrintZoneData" />
+    <bpmn:sequenceFlow id="Flow_0vxx5i8" sourceRef="GetZoneData" targetRef="Gateway_00w3col" />
     <bpmn:sequenceFlow id="Flow_0rgd867" sourceRef="Gateway_1xgojrv" targetRef="GetZoneData" />
     <bpmn:parallelGateway id="Gateway_00w3col">
-      <bpmn:incoming>Flow_04pus9i</bpmn:incoming>
-      <bpmn:incoming>Flow_1nqt53o</bpmn:incoming>
+      <bpmn:incoming>Flow_0vxx5i8</bpmn:incoming>
+      <bpmn:incoming>Flow_0u5u962</bpmn:incoming>
       <bpmn:outgoing>Flow_0ca8rbn</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:sequenceFlow id="Flow_04pus9i" sourceRef="PrintUserData" targetRef="Gateway_00w3col" />
-    <bpmn:sequenceFlow id="Flow_1nqt53o" sourceRef="PrintZoneData" targetRef="Gateway_00w3col" />
     <bpmn:serviceTask id="SelectZones" name="Select Zones" camunda:delegateExpression="${zoneSelectorDelegate}">
       <bpmn:incoming>Flow_0ca8rbn</bpmn:incoming>
       <bpmn:outgoing>Flow_00xadoe</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0ca8rbn" sourceRef="Gateway_00w3col" targetRef="SelectZones" />
-    <bpmn:scriptTask id="PrintSelectedZonesAndTotalPrice" name="Print Selected Zones And Total Price" scriptFormat="javascript">
-      <bpmn:incoming>Flow_00xadoe</bpmn:incoming>
-      <bpmn:outgoing>Flow_19cnuiz</bpmn:outgoing>
-      <bpmn:script>java.lang.System.out.println("\n" + execution.getVariable("selectedZones") + "\n");
-java.lang.System.out.println("\n" + execution.getVariable("totalPrice") + "\n");</bpmn:script>
-    </bpmn:scriptTask>
-    <bpmn:sequenceFlow id="Flow_00xadoe" sourceRef="SelectZones" targetRef="PrintSelectedZonesAndTotalPrice" />
+    <bpmn:sequenceFlow id="Flow_00xadoe" sourceRef="SelectZones" targetRef="CheckAvailability" />
     <bpmn:serviceTask id="CheckAvailability" name="Check Availability">
       <bpmn:extensionElements>
         <camunda:connector>
@@ -89,39 +65,26 @@ java.lang.System.out.println("\n" + execution.getVariable("totalPrice") + "\n");
           <camunda:connectorId>soap-http-connector</camunda:connectorId>
         </camunda:connector>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_19cnuiz</bpmn:incoming>
+      <bpmn:incoming>Flow_00xadoe</bpmn:incoming>
       <bpmn:outgoing>Flow_0y740my</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_19cnuiz" sourceRef="PrintSelectedZonesAndTotalPrice" targetRef="CheckAvailability" />
-    <bpmn:scriptTask id="PrintCheckAvailabilityResponse" name="Print Check Availability Response" scriptFormat="javascript">
-      <bpmn:incoming>Flow_0y740my</bpmn:incoming>
-      <bpmn:outgoing>Flow_0xtkj0t</bpmn:outgoing>
-      <bpmn:script>java.lang.System.out.println("\n" + execution.getVariable("checkAvailabilityResponse") + "\n");</bpmn:script>
-    </bpmn:scriptTask>
-    <bpmn:sequenceFlow id="Flow_0y740my" sourceRef="CheckAvailability" targetRef="PrintCheckAvailabilityResponse" />
+    <bpmn:sequenceFlow id="Flow_0y740my" sourceRef="CheckAvailability" targetRef="PosterRequestDecision" />
     <bpmn:intermediateCatchEvent id="PosterRequestDecision" name="Poster Request Decision">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="correlationVariable">${checkAvailabilityResponse.requestId}</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0xtkj0t</bpmn:incoming>
+      <bpmn:incoming>Flow_0y740my</bpmn:incoming>
       <bpmn:outgoing>Flow_17q3kc4</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_04a5ro6" messageRef="Message_3fbi84q" />
     </bpmn:intermediateCatchEvent>
-    <bpmn:sequenceFlow id="Flow_0xtkj0t" sourceRef="PrintCheckAvailabilityResponse" targetRef="PosterRequestDecision" />
-    <bpmn:scriptTask id="PrintPosterRequestDecision" name="Print Poster Request Decision" scriptFormat="javascript">
-      <bpmn:incoming>Flow_17q3kc4</bpmn:incoming>
-      <bpmn:outgoing>Flow_0pigeo9</bpmn:outgoing>
-      <bpmn:script>java.lang.System.out.println("\n" + execution.getVariable("posterRequestDecision") + "\n");</bpmn:script>
-    </bpmn:scriptTask>
-    <bpmn:sequenceFlow id="Flow_17q3kc4" sourceRef="PosterRequestDecision" targetRef="PrintPosterRequestDecision" />
+    <bpmn:sequenceFlow id="Flow_17q3kc4" sourceRef="PosterRequestDecision" targetRef="Gateway_1r4ovy0" />
     <bpmn:exclusiveGateway id="Gateway_1r4ovy0">
-      <bpmn:incoming>Flow_0pigeo9</bpmn:incoming>
+      <bpmn:incoming>Flow_17q3kc4</bpmn:incoming>
       <bpmn:outgoing>ConfirmPosterRequestBranch</bpmn:outgoing>
       <bpmn:outgoing>CancelPosterRequestBranch</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0pigeo9" sourceRef="PrintPosterRequestDecision" targetRef="Gateway_1r4ovy0" />
     <bpmn:serviceTask id="ConfirmPosterRequest" name="Confirm Poster Request">
       <bpmn:extensionElements>
         <camunda:connector>
@@ -135,24 +98,13 @@ java.lang.System.out.println("\n" + execution.getVariable("totalPrice") + "\n");
           <camunda:connectorId>soap-http-connector</camunda:connectorId>
         </camunda:connector>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1th31ty</bpmn:incoming>
+      <bpmn:incoming>ConfirmPosterRequestBranch</bpmn:incoming>
       <bpmn:outgoing>Flow_05kpviq</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="ConfirmPosterRequestBranch" name="Confirm Poster Request Branch" sourceRef="Gateway_1r4ovy0" targetRef="PrintConfirmPosterRequest">
+    <bpmn:sequenceFlow id="ConfirmPosterRequestBranch" name="Confirm Poster Request Branch" sourceRef="Gateway_1r4ovy0" targetRef="ConfirmPosterRequest">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="javascript">posterRequestDecision.decision == "confirm"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:scriptTask id="PrintConfirmPosterRequest" name="Print Confirm Poster Request" scriptFormat="javascript">
-      <bpmn:incoming>ConfirmPosterRequestBranch</bpmn:incoming>
-      <bpmn:outgoing>Flow_1th31ty</bpmn:outgoing>
-      <bpmn:script>java.lang.System.out.println("\nPoster Request Confirmed\n");</bpmn:script>
-    </bpmn:scriptTask>
-    <bpmn:sequenceFlow id="Flow_1th31ty" sourceRef="PrintConfirmPosterRequest" targetRef="ConfirmPosterRequest" />
-    <bpmn:scriptTask id="PrintPosterRequestCancelled" name="Print Poster Request Cancelled" scriptFormat="javascript">
-      <bpmn:incoming>CancelPosterRequestBranch</bpmn:incoming>
-      <bpmn:outgoing>Flow_0ehd2qe</bpmn:outgoing>
-      <bpmn:script>java.lang.System.out.println("\nPoster Request Cancelled\n");</bpmn:script>
-    </bpmn:scriptTask>
-    <bpmn:sequenceFlow id="CancelPosterRequestBranch" name="Cancel Poster Request Branch" sourceRef="Gateway_1r4ovy0" targetRef="PrintPosterRequestCancelled">
+    <bpmn:sequenceFlow id="CancelPosterRequestBranch" name="Cancel Poster Request Branch" sourceRef="Gateway_1r4ovy0" targetRef="CancelPosterRequest">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="javascript">posterRequestDecision.decision == "cancel"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_0j4a4m4">
@@ -161,22 +113,16 @@ java.lang.System.out.println("\n" + execution.getVariable("totalPrice") + "\n");
       <bpmn:outgoing>Flow_16lqhso</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_16lqhso" sourceRef="Gateway_0j4a4m4" targetRef="Event_1fbyf7h" />
-    <bpmn:scriptTask id="PrintBill" name="Print Bill" scriptFormat="javascript">
-      <bpmn:incoming>Flow_05kpviq</bpmn:incoming>
-      <bpmn:outgoing>Flow_1x0b8pv</bpmn:outgoing>
-      <bpmn:script>java.lang.System.out.println("\n" + execution.getVariable("orderInformation") + "\n");</bpmn:script>
-    </bpmn:scriptTask>
-    <bpmn:sequenceFlow id="Flow_05kpviq" sourceRef="ConfirmPosterRequest" targetRef="PrintBill" />
+    <bpmn:sequenceFlow id="Flow_05kpviq" sourceRef="ConfirmPosterRequest" targetRef="WriteRequestInformationFile" />
     <bpmn:serviceTask id="WriteRequestInformationFile" name="Write Request Information File" camunda:delegateExpression="${requestFileWriterDelegate}">
-      <bpmn:incoming>Flow_1x0b8pv</bpmn:incoming>
+      <bpmn:incoming>Flow_05kpviq</bpmn:incoming>
       <bpmn:outgoing>Flow_07y5flo</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1x0b8pv" sourceRef="PrintBill" targetRef="WriteRequestInformationFile" />
     <bpmn:sequenceFlow id="Flow_07y5flo" sourceRef="WriteRequestInformationFile" targetRef="Gateway_0j4a4m4" />
     <bpmn:startEvent id="Event_1n2nryx">
       <bpmn:outgoing>Flow_1n3q7b4</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_1n3q7b4" sourceRef="Event_1n2nryx" targetRef="PrintPosterAvailabilityRequest" />
+    <bpmn:sequenceFlow id="Flow_1n3q7b4" sourceRef="Event_1n2nryx" targetRef="Gateway_1xgojrv" />
     <bpmn:serviceTask id="CancelPosterRequest" name="Cancel Poster Request">
       <bpmn:extensionElements>
         <camunda:connector>
@@ -190,240 +136,153 @@ java.lang.System.out.println("\n" + execution.getVariable("totalPrice") + "\n");
           <camunda:connectorId>soap-http-connector</camunda:connectorId>
         </camunda:connector>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0ehd2qe</bpmn:incoming>
+      <bpmn:incoming>CancelPosterRequestBranch</bpmn:incoming>
       <bpmn:outgoing>Flow_0ibzzwr</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0ehd2qe" sourceRef="PrintPosterRequestCancelled" targetRef="CancelPosterRequest" />
-    <bpmn:scriptTask id="PrintCancelInformation" name="Print Cancel Information" scriptFormat="javascript">
-      <bpmn:incoming>Flow_0ibzzwr</bpmn:incoming>
-      <bpmn:outgoing>Flow_0w1zpkd</bpmn:outgoing>
-      <bpmn:script>java.lang.System.out.println("\n" + execution.getVariable("cancelInformation") + "\n");</bpmn:script>
-    </bpmn:scriptTask>
-    <bpmn:sequenceFlow id="Flow_0ibzzwr" sourceRef="CancelPosterRequest" targetRef="PrintCancelInformation" />
+    <bpmn:sequenceFlow id="Flow_0ibzzwr" sourceRef="CancelPosterRequest" targetRef="SendRequestCancelNotification" />
     <bpmn:serviceTask id="SendRequestCancelNotification" name="Send Request Cancel Notification" camunda:delegateExpression="${requestCancelNotifierDelegate}">
-      <bpmn:incoming>Flow_0w1zpkd</bpmn:incoming>
+      <bpmn:incoming>Flow_0ibzzwr</bpmn:incoming>
       <bpmn:outgoing>Flow_02245by</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0w1zpkd" sourceRef="PrintCancelInformation" targetRef="SendRequestCancelNotification" />
     <bpmn:sequenceFlow id="Flow_02245by" sourceRef="SendRequestCancelNotification" targetRef="Gateway_0j4a4m4" />
   </bpmn:process>
   <bpmn:message id="Message_088b79l" name="poster-availability-request" />
   <bpmn:message id="Message_3fbi84q" name="poster-request-decision" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="PublicBillpostingService">
-      <bpmndi:BPMNShape id="Activity_0h7sdzu_di" bpmnElement="PrintPosterAvailabilityRequest">
-        <dc:Bounds x="280" y="170" width="100" height="80" />
+      <bpmndi:BPMNShape id="Event_1fbyf7h_di" bpmnElement="Event_1fbyf7h">
+        <dc:Bounds x="1892" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0j4a4m4_di" bpmnElement="Gateway_0j4a4m4" isMarkerVisible="true">
+        <dc:Bounds x="1775" y="185" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ey8319" bpmnElement="WriteRequestInformationFile">
+        <dc:Bounds x="1610" y="60" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_15iu9ou_di" bpmnElement="GetUserData">
-        <dc:Bounds x="610" y="80" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0xs21uq" bpmnElement="PrintUserData">
-        <dc:Bounds x="780" y="80" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1xgojrv_di" bpmnElement="Gateway_1xgojrv">
-        <dc:Bounds x="465" y="185" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1wxzxop" bpmnElement="GetZoneData">
-        <dc:Bounds x="610" y="270" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1j9xky7" bpmnElement="PrintZoneData">
-        <dc:Bounds x="780" y="270" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_00w3col_di" bpmnElement="Gateway_00w3col">
-        <dc:Bounds x="955" y="185" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_198dlif_di" bpmnElement="SelectZones">
-        <dc:Bounds x="1080" y="170" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_02bn7a5" bpmnElement="PrintSelectedZonesAndTotalPrice">
-        <dc:Bounds x="1250" y="170" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0c2rpls" bpmnElement="CheckAvailability">
-        <dc:Bounds x="1430" y="170" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1xvwm9z" bpmnElement="PrintCheckAvailabilityResponse">
-        <dc:Bounds x="1610" y="170" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1f0l07a_di" bpmnElement="PosterRequestDecision">
-        <dc:Bounds x="1792" y="192" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1772" y="235" width="77" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0mhduad" bpmnElement="PrintPosterRequestDecision">
-        <dc:Bounds x="1910" y="170" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_1ut673l" bpmnElement="ConfirmPosterRequest">
+        <dc:Bounds x="1430" y="60" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1r4ovy0_di" bpmnElement="Gateway_1r4ovy0" isMarkerVisible="true">
-        <dc:Bounds x="2095" y="185" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1ut673l" bpmnElement="ConfirmPosterRequest">
-        <dc:Bounds x="2380" y="60" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0xns472" bpmnElement="PrintConfirmPosterRequest">
-        <dc:Bounds x="2190" y="60" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1xnxswx" bpmnElement="PrintPosterRequestCancelled">
-        <dc:Bounds x="2190" y="270" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_17vpmk8" bpmnElement="PrintBill">
-        <dc:Bounds x="2560" y="60" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1ey8319" bpmnElement="WriteRequestInformationFile">
-        <dc:Bounds x="2730" y="60" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1fbyf7h_di" bpmnElement="Event_1fbyf7h">
-        <dc:Bounds x="3082" y="192" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0j4a4m4_di" bpmnElement="Gateway_0j4a4m4" isMarkerVisible="true">
-        <dc:Bounds x="2965" y="185" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1n2nryx_di" bpmnElement="Event_1n2nryx">
-        <dc:Bounds x="172" y="192" width="36" height="36" />
+        <dc:Bounds x="1295" y="185" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_02xyc0m" bpmnElement="CancelPosterRequest">
-        <dc:Bounds x="2380" y="270" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_00mwqex" bpmnElement="PrintCancelInformation">
-        <dc:Bounds x="2560" y="270" width="100" height="80" />
+        <dc:Bounds x="1430" y="270" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_16ce68b" bpmnElement="SendRequestCancelNotification">
-        <dc:Bounds x="2730" y="270" width="100" height="80" />
+        <dc:Bounds x="1610" y="270" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0u5u962_di" bpmnElement="Flow_0u5u962">
-        <di:waypoint x="710" y="120" />
-        <di:waypoint x="780" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0uzi8og_di" bpmnElement="Flow_0uzi8og">
-        <di:waypoint x="380" y="210" />
-        <di:waypoint x="465" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0bqszhx_di" bpmnElement="Flow_0bqszhx">
-        <di:waypoint x="490" y="185" />
-        <di:waypoint x="490" y="120" />
-        <di:waypoint x="610" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_1e6ton6" bpmnElement="Flow_0vxx5i8">
-        <di:waypoint x="710" y="310" />
-        <di:waypoint x="780" y="310" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0rgd867_di" bpmnElement="Flow_0rgd867">
-        <di:waypoint x="490" y="235" />
-        <di:waypoint x="490" y="310" />
-        <di:waypoint x="610" y="310" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_04pus9i_di" bpmnElement="Flow_04pus9i">
-        <di:waypoint x="880" y="120" />
-        <di:waypoint x="980" y="120" />
-        <di:waypoint x="980" y="185" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1nqt53o_di" bpmnElement="Flow_1nqt53o">
-        <di:waypoint x="880" y="310" />
-        <di:waypoint x="980" y="310" />
-        <di:waypoint x="980" y="235" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1f0l07a_di" bpmnElement="PosterRequestDecision">
+        <dc:Bounds x="1132" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1112" y="235" width="77" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0c2rpls" bpmnElement="CheckAvailability">
+        <dc:Bounds x="930" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_198dlif_di" bpmnElement="SelectZones">
+        <dc:Bounds x="740" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_00w3col_di" bpmnElement="Gateway_00w3col">
+        <dc:Bounds x="605" y="185" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15iu9ou_di" bpmnElement="GetUserData">
+        <dc:Bounds x="410" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1xgojrv_di" bpmnElement="Gateway_1xgojrv">
+        <dc:Bounds x="265" y="185" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1n2nryx_di" bpmnElement="Event_1n2nryx">
+        <dc:Bounds x="152" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1wxzxop" bpmnElement="GetZoneData">
+        <dc:Bounds x="410" y="270" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0ca8rbn_di" bpmnElement="Flow_0ca8rbn">
-        <di:waypoint x="1005" y="210" />
-        <di:waypoint x="1080" y="210" />
+        <di:waypoint x="655" y="210" />
+        <di:waypoint x="740" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_00xadoe_di" bpmnElement="Flow_00xadoe">
-        <di:waypoint x="1180" y="210" />
-        <di:waypoint x="1250" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_19cnuiz_di" bpmnElement="Flow_19cnuiz">
-        <di:waypoint x="1350" y="210" />
-        <di:waypoint x="1430" y="210" />
+        <di:waypoint x="840" y="210" />
+        <di:waypoint x="930" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0y740my_di" bpmnElement="Flow_0y740my">
-        <di:waypoint x="1530" y="210" />
-        <di:waypoint x="1610" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0xtkj0t_di" bpmnElement="Flow_0xtkj0t">
-        <di:waypoint x="1710" y="210" />
-        <di:waypoint x="1792" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_17q3kc4_di" bpmnElement="Flow_17q3kc4">
-        <di:waypoint x="1828" y="210" />
-        <di:waypoint x="1910" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0pigeo9_di" bpmnElement="Flow_0pigeo9">
-        <di:waypoint x="2010" y="210" />
-        <di:waypoint x="2095" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_14rsgk6_di" bpmnElement="ConfirmPosterRequestBranch">
-        <di:waypoint x="2120" y="185" />
-        <di:waypoint x="2120" y="100" />
-        <di:waypoint x="2190" y="100" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2097" y="139" width="79" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1th31ty_di" bpmnElement="Flow_1th31ty">
-        <di:waypoint x="2290" y="100" />
-        <di:waypoint x="2380" y="100" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0mwtmvr_di" bpmnElement="CancelPosterRequestBranch">
-        <di:waypoint x="2120" y="235" />
-        <di:waypoint x="2120" y="310" />
-        <di:waypoint x="2190" y="310" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2096" y="272" width="79" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_05kpviq_di" bpmnElement="Flow_05kpviq">
-        <di:waypoint x="2480" y="100" />
-        <di:waypoint x="2560" y="100" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1x0b8pv_di" bpmnElement="Flow_1x0b8pv">
-        <di:waypoint x="2660" y="100" />
-        <di:waypoint x="2730" y="100" />
+        <di:waypoint x="1030" y="210" />
+        <di:waypoint x="1132" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_16lqhso_di" bpmnElement="Flow_16lqhso">
-        <di:waypoint x="3015" y="210" />
-        <di:waypoint x="3082" y="210" />
+        <di:waypoint x="1825" y="210" />
+        <di:waypoint x="1892" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_07y5flo_di" bpmnElement="Flow_07y5flo">
-        <di:waypoint x="2830" y="100" />
-        <di:waypoint x="2990" y="100" />
-        <di:waypoint x="2990" y="185" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1n3q7b4_di" bpmnElement="Flow_1n3q7b4">
-        <di:waypoint x="208" y="210" />
-        <di:waypoint x="280" y="210" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ehd2qe_di" bpmnElement="Flow_0ehd2qe">
-        <di:waypoint x="2290" y="310" />
-        <di:waypoint x="2380" y="310" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ibzzwr_di" bpmnElement="Flow_0ibzzwr">
-        <di:waypoint x="2480" y="310" />
-        <di:waypoint x="2560" y="310" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0w1zpkd_di" bpmnElement="Flow_0w1zpkd">
-        <di:waypoint x="2660" y="310" />
-        <di:waypoint x="2730" y="310" />
+        <di:waypoint x="1710" y="100" />
+        <di:waypoint x="1800" y="100" />
+        <di:waypoint x="1800" y="185" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_02245by_di" bpmnElement="Flow_02245by">
-        <di:waypoint x="2830" y="310" />
-        <di:waypoint x="2990" y="310" />
-        <di:waypoint x="2990" y="235" />
+        <di:waypoint x="1710" y="310" />
+        <di:waypoint x="1800" y="310" />
+        <di:waypoint x="1800" y="235" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05kpviq_di" bpmnElement="Flow_05kpviq">
+        <di:waypoint x="1530" y="100" />
+        <di:waypoint x="1610" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14rsgk6_di" bpmnElement="ConfirmPosterRequestBranch">
+        <di:waypoint x="1320" y="185" />
+        <di:waypoint x="1320" y="100" />
+        <di:waypoint x="1430" y="100" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1280" y="126" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17q3kc4_di" bpmnElement="Flow_17q3kc4">
+        <di:waypoint x="1168" y="210" />
+        <di:waypoint x="1295" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mwtmvr_di" bpmnElement="CancelPosterRequestBranch">
+        <di:waypoint x="1320" y="235" />
+        <di:waypoint x="1320" y="310" />
+        <di:waypoint x="1430" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1280" y="266" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ibzzwr_di" bpmnElement="Flow_0ibzzwr">
+        <di:waypoint x="1530" y="310" />
+        <di:waypoint x="1610" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_1e6ton6" bpmnElement="Flow_0vxx5i8">
+        <di:waypoint x="510" y="310" />
+        <di:waypoint x="630" y="310" />
+        <di:waypoint x="630" y="235" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0u5u962_di" bpmnElement="Flow_0u5u962">
+        <di:waypoint x="510" y="120" />
+        <di:waypoint x="630" y="120" />
+        <di:waypoint x="630" y="185" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bqszhx_di" bpmnElement="Flow_0bqszhx">
+        <di:waypoint x="290" y="185" />
+        <di:waypoint x="290" y="120" />
+        <di:waypoint x="410" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1n3q7b4_di" bpmnElement="Flow_1n3q7b4">
+        <di:waypoint x="188" y="210" />
+        <di:waypoint x="265" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rgd867_di" bpmnElement="Flow_0rgd867">
+        <di:waypoint x="290" y="235" />
+        <di:waypoint x="290" y="310" />
+        <di:waypoint x="410" y="310" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
