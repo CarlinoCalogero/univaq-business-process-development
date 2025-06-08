@@ -9,6 +9,9 @@ import it.univaq.disim.bpd.publicbillpostingservice.model.CheckAvailabilityRespo
 public class CheckAvailabilityResponseParser {
 
 	public CheckAvailabilityResponse unmarshallCheckAvailabilityResponse(DomXmlElement checkAvailabilityResponseXML) {
+		if (checkAvailabilityResponseXML == null) {
+            throw new IllegalStateException("Missing required DomXmlElement for CheckAvailabilityResponse");
+        }
 		return checkAvailabilityResponseXML.mapTo(CheckAvailabilityResponse.class);
 	}
 

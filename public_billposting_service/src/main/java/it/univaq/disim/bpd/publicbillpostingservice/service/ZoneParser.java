@@ -11,6 +11,9 @@ import it.univaq.disim.bpd.publicbillpostingservice.model.Zone;
 public class ZoneParser {
 
 	public List<Zone> unmarshallZoneList(SpinJsonNode zoneListJSON) {
+		if (zoneListJSON == null) {
+            throw new IllegalStateException("Missing required SpinJsonNode for List of Zone");
+        }
 		return zoneListJSON.mapTo("java.util.ArrayList<it.univaq.disim.bpd.publicbillpostingservice.model.Zone>");
 	}
 

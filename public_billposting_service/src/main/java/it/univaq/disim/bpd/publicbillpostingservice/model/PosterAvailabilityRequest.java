@@ -1,12 +1,22 @@
-package it.univaq.disim.bpd.posteravailabilityrestservice;
+package it.univaq.disim.bpd.publicbillpostingservice.model;
 
 import java.util.List;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+
 public class PosterAvailabilityRequest {
 
+	@NotBlank(message = "username is mandatory")
 	private String username;
+
 	// This now refers to the dedicated CityPrice class
+	@NotEmpty(message = "citiesAndMaximumPrice must contain at least one city")
+	@Valid // validate nested CityPrice objects too
 	private List<CityPrice> citiesAndMaximumPrice;
+
+	@NotBlank(message = "posterFormat is mandatory")
 	private String posterFormat;
 
 	// Default constructor is essential for JSON deserialization by Jackson
@@ -58,8 +68,8 @@ public class PosterAvailabilityRequest {
 		int counter = 1;
 		for (CityPrice cityAndMaxPrice : citiesAndMaximumPrice) {
 			stringBuilder.append("\n");
-			stringBuilder
-					.append("(" + counter + ") " + cityAndMaxPrice.getCity() + ", " + cityAndMaxPrice.getMaxPrice() + " euro");
+			stringBuilder.append(
+					"(" + counter + ") " + cityAndMaxPrice.getCity() + ", " + cityAndMaxPrice.getMaxPrice() + " euro");
 			counter++;
 		}
 		stringBuilder.append("\n");

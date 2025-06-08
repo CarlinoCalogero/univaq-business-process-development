@@ -9,6 +9,9 @@ import it.univaq.disim.bpd.publicbillpostingservice.model.User;
 public class UserParser {
 
 	public User unmarshallUser(SpinJsonNode userJSON) {
+		if (userJSON == null) {
+            throw new IllegalStateException("Missing required SpinJsonNode for User");
+        }
 		return userJSON.mapTo(User.class);
 	}
 

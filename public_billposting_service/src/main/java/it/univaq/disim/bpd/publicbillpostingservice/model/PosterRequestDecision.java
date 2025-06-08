@@ -1,8 +1,15 @@
 package it.univaq.disim.bpd.publicbillpostingservice.model;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+
 public class PosterRequestDecision {
 
+	@NotBlank(message = "requestId is mandatory")
 	private String requestId;
+
+	@NotBlank(message = "decision is mandatory")
+	@Pattern(regexp = "confirm|cancel", flags = Pattern.Flag.CASE_INSENSITIVE, message = "decision must be either 'confirm' or 'cancel'")
 	private String decision;
 
 	public String getRequestId() {

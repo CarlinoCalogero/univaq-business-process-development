@@ -9,6 +9,9 @@ import it.univaq.disim.bpd.publicbillpostingservice.model.Bill;
 public class BillParser {
 
 	public Bill unmarshallBill(DomXmlElement billXML) {
+		if (billXML == null) {
+            throw new IllegalStateException("Missing required DomXmlElement for Bill");
+        }
 		return billXML.mapTo(Bill.class);
 	}
 

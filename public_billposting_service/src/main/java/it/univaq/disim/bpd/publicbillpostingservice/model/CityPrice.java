@@ -1,7 +1,14 @@
-package it.univaq.disim.bpd.posteravailabilityrestservice;
+package it.univaq.disim.bpd.publicbillpostingservice.model;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PositiveOrZero;
 
 public class CityPrice {
+
+	@NotBlank(message = "city is mandatory")
 	private String city;
+
+	@PositiveOrZero(message = "maxPrice must be zero or positive")
 	private double maxPrice; // Use double for decimal numbers. BigDecimal is also an option for financial
 								// precision.
 

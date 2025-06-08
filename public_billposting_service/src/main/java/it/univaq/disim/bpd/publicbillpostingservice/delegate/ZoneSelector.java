@@ -10,31 +10,30 @@ import java.util.stream.Collectors;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import it.univaq.disim.bpd.posteravailabilityrestservice.CityPrice;
-import it.univaq.disim.bpd.posteravailabilityrestservice.PosterAvailabilityRequest;
+import it.univaq.disim.bpd.publicbillpostingservice.model.CityPrice;
+import it.univaq.disim.bpd.publicbillpostingservice.model.PosterAvailabilityRequest;
 import it.univaq.disim.bpd.publicbillpostingservice.model.Zone;
 
 @Component("zoneSelectorDelegate")
-public class ZoneSelector implements JavaDelegate {
+public class ZoneSelector extends BaseDelegate implements JavaDelegate {
+
+	private static final Logger logger = LoggerFactory.getLogger(ZoneSelector.class);
 
 	@Override
-	public void execute(DelegateExecution execution) throws Exception {
+	public void execute(DelegateExecution execution) {
+		logger.info("📍 ZoneSelector Delegate Invoked");
 
-		System.out.println("Zone Selector Delegate Invoked");
+		PosterAvailabilityRequest request = getRequiredVariable(execution, "posterAvailabilityRequest",
+				PosterAvailabilityRequest.class);
+		List<Zone> allZones = getRequiredVariable(execution, "zoneData", List.class);
 
-		// Retrieve input variables
-		PosterAvailabilityRequest request = (PosterAvailabilityRequest) execution
-				.getVariable("posterAvailabilityRequest");
-//		System.out.println(request);
-		List<Zone> allZones = (List<Zone>) execution.getVariable("zoneData");
-//		System.out.println(allZones);
-
-		// Group all available zones by city
+		// Group zones by city
 		Map<String, List<Zone>> zonesByCity = allZones.stream().collect(Collectors.groupingBy(Zone::getCity));
 
-		// Prepare result map: city name → selected zones
 		Map<String, List<Zone>> selectedZonesMap = new HashMap<>();
 		double totalPrice = 0;
 
@@ -61,16 +60,15 @@ public class ZoneSelector implements JavaDelegate {
 			}
 		}
 
-		// Set results as process variables
 		execution.setVariable("selectedZones", selectedZonesMap);
 		execution.setVariable("totalPrice", totalPrice);
 
-		System.out.println("✔ Selected Zones by City:");
+		logger.info("✅ Selected Zones by City:");
 		selectedZonesMap.forEach((city, zones) -> {
-			System.out.println("- " + city + ":");
-			zones.forEach(z -> System.out.println("   • " + z));
+			logger.info("  - {}", city);
+			zones.forEach(zone -> logger.info("     • {}", zone));
 		});
-
-		System.out.println("Total price: €" + totalPrice);
+		logger.info("💶 Total price: €{}", totalPrice);
 	}
+
 }
