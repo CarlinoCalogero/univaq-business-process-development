@@ -30,13 +30,9 @@ public class PosterRequestDecision {
 
 	@Override
 	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("[Poster Request Decision Info]");
-		stringBuilder.append("\n");
-		stringBuilder.append("request id: " + requestId);
-		stringBuilder.append("\n");
-		stringBuilder.append("decision: " + decision);
-		return stringBuilder.toString();
+		return String.format(
+				"{\n  \"Poster Request Decision Info\": {\n    \"requestId\": \"%s\",\n    \"decision\": \"%s\"\n  }\n}",
+				requestId, decision);
 	}
 
 }

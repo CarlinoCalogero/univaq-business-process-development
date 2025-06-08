@@ -9,20 +9,17 @@ public class CityPrice {
 	private String city;
 
 	@PositiveOrZero(message = "maxPrice must be zero or positive")
-	private double maxPrice; // Use double for decimal numbers. BigDecimal is also an option for financial
-								// precision.
+	private double maxPrice;
 
 	// Default constructor is essential for JSON deserialization by Jackson
 	public CityPrice() {
 	}
 
-	// Optional: Constructor with all fields for convenience
 	public CityPrice(String city, double maxPrice) {
 		this.city = city;
 		this.maxPrice = maxPrice;
 	}
 
-	// --- Getters ---
 	public String getCity() {
 		return city;
 	}
@@ -31,7 +28,6 @@ public class CityPrice {
 		return maxPrice;
 	}
 
-	// --- Setters ---
 	public void setCity(String city) {
 		this.city = city;
 	}
@@ -40,15 +36,10 @@ public class CityPrice {
 		this.maxPrice = maxPrice;
 	}
 
-	// Optional: Override toString() for easy printing/logging
 	@Override
 	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("[City and Price Info]");
-		stringBuilder.append("\n");
-		stringBuilder.append("city: " + city);
-		stringBuilder.append("\n");
-		stringBuilder.append("max price: " + maxPrice);
-		return stringBuilder.toString();
+		return String.format("{\n  \"City and Price Info\": {\n    \"city\": \"%s\",\n    \"maxPrice\": %.2f\n  }\n}",
+				city, maxPrice);
 	}
+
 }

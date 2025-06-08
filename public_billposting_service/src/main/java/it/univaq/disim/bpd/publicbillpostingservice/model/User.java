@@ -86,26 +86,12 @@ public class User {
 
 	@Override
 	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("[User Info]");
-		stringBuilder.append("\n");
-		stringBuilder.append("username: " + username);
-		stringBuilder.append("\n");
-		stringBuilder.append("name: " + name);
-		stringBuilder.append("\n");
-		stringBuilder.append("surname: " + surname);
-		stringBuilder.append("\n");
-		stringBuilder.append("taxCode: " + taxCode);
-		stringBuilder.append("\n");
-		stringBuilder.append("address: " + address);
-		stringBuilder.append("\n");
-		stringBuilder.append("city: " + city);
-		stringBuilder.append("\n");
-		stringBuilder.append("zip code: " + zipCode);
-		stringBuilder.append("\n");
-		stringBuilder.append("phone: " + phone);
-		stringBuilder.append("\n");
-		stringBuilder.append("email: " + email);
-		return stringBuilder.toString();
+		return String.format(
+				"{\n" + "  \"User Info\": {\n" + "    \"username\": \"%s\",\n" + "    \"name\": \"%s\",\n"
+						+ "    \"surname\": \"%s\",\n" + "    \"taxCode\": \"%s\",\n" + "    \"address\": \"%s\",\n"
+						+ "    \"city\": \"%s\",\n" + "    \"zipCode\": \"%s\",\n" + "    \"phone\": \"%s\",\n"
+						+ "    \"email\": \"%s\"\n" + "  }\n" + "}",
+				username, name, surname, taxCode, address, city, zipCode, phone, email);
 	}
+
 }

@@ -47,17 +47,9 @@ public class Zone implements Serializable {
 
 	@Override
 	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("[Zone Info]");
-		stringBuilder.append("\n");
-		stringBuilder.append("id: " + id);
-		stringBuilder.append("\n");
-		stringBuilder.append("name: " + name);
-		stringBuilder.append("\n");
-		stringBuilder.append("city: " + city);
-		stringBuilder.append("\n");
-		stringBuilder.append("price: " + price);
-		return stringBuilder.toString();
+		return String.format(
+				"{\n  \"Zone Info\": {\n    \"id\": %d,\n    \"name\": \"%s\",\n    \"city\": \"%s\",\n    \"price\": %.2f\n  }\n}",
+				id, name, city, price);
 	}
 
 }

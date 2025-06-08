@@ -11,8 +11,10 @@ public class Bill {
 
 	@XmlElement(name = "accountHolder", namespace = "http://disim.univaq.it/services/postingservice")
 	private String accountHolder;
+
 	@XmlElement(name = "invoiceNumber", namespace = "http://disim.univaq.it/services/postingservice")
 	private String invoiceNumber;
+
 	@XmlElement(name = "amountDue", namespace = "http://disim.univaq.it/services/postingservice")
 	private double amountDue;
 
@@ -39,18 +41,12 @@ public class Bill {
 	public void setAmountDue(double amountDue) {
 		this.amountDue = amountDue;
 	}
-	
+
 	@Override
 	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("[Bill Info]");
-		stringBuilder.append("\n");
-		stringBuilder.append("account holder: " + accountHolder);
-		stringBuilder.append("\n");
-		stringBuilder.append("invoice number: " + invoiceNumber);
-		stringBuilder.append("\n");
-		stringBuilder.append("amount due: " + amountDue);
-		return stringBuilder.toString();
+		return String.format(
+				"{\n  \"Bill Info\": {\n    \"accountHolder\": \"%s\",\n    \"invoiceNumber\": \"%s\",\n    \"amountDue\": %.2f\n  }\n}",
+				accountHolder, invoiceNumber, amountDue);
 	}
 
 }

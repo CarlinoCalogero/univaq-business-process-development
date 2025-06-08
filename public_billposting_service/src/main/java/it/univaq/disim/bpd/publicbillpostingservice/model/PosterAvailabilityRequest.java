@@ -11,9 +11,8 @@ public class PosterAvailabilityRequest {
 	@NotBlank(message = "username is mandatory")
 	private String username;
 
-	// This now refers to the dedicated CityPrice class
 	@NotEmpty(message = "citiesAndMaximumPrice must contain at least one city")
-	@Valid // validate nested CityPrice objects too
+	@Valid
 	private List<CityPrice> citiesAndMaximumPrice;
 
 	@NotBlank(message = "posterFormat is mandatory")
@@ -23,14 +22,12 @@ public class PosterAvailabilityRequest {
 	public PosterAvailabilityRequest() {
 	}
 
-	// Optional: Constructor with all fields for convenience
 	public PosterAvailabilityRequest(String username, List<CityPrice> citiesAndMaximumPrice, String posterFormat) {
 		this.username = username;
 		this.citiesAndMaximumPrice = citiesAndMaximumPrice;
 		this.posterFormat = posterFormat;
 	}
 
-	// --- Getters ---
 	public String getUsername() {
 		return username;
 	}
@@ -43,7 +40,6 @@ public class PosterAvailabilityRequest {
 		return posterFormat;
 	}
 
-	// --- Setters ---
 	public void setUsername(String username) {
 		this.username = username;
 	}
@@ -56,24 +52,27 @@ public class PosterAvailabilityRequest {
 		this.posterFormat = posterFormat;
 	}
 
-	// Optional: Override toString() for easy printing/logging
 	@Override
 	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("[Poster Availability Request Info]");
-		stringBuilder.append("\n");
-		stringBuilder.append("username: " + username);
-		stringBuilder.append("\n");
-		stringBuilder.append("cities and maximum prices:");
-		int counter = 1;
-		for (CityPrice cityAndMaxPrice : citiesAndMaximumPrice) {
-			stringBuilder.append("\n");
-			stringBuilder.append(
-					"(" + counter + ") " + cityAndMaxPrice.getCity() + ", " + cityAndMaxPrice.getMaxPrice() + " euro");
-			counter++;
+		StringBuilder builder = new StringBuilder();
+		builder.append("{\n  \"Poster Availability Request Info\": {\n");
+		builder.append(String.format("    \"username\": \"%s\",\n", username));
+
+		builder.append("    \"citiesAndMaximumPrice\": [\n");
+		for (int i = 0; i < citiesAndMaximumPrice.size(); i++) {
+			CityPrice cp = citiesAndMaximumPrice.get(i);
+			builder.append(
+					String.format("      { \"city\": \"%s\", \"maxPrice\": %.2f }", cp.getCity(), cp.getMaxPrice()));
+			if (i < citiesAndMaximumPrice.size() - 1) {
+				builder.append(",");
+			}
+			builder.append("\n");
 		}
-		stringBuilder.append("\n");
-		stringBuilder.append("poster format: " + posterFormat);
-		return stringBuilder.toString();
+		builder.append("    ],\n");
+
+		builder.append(String.format("    \"posterFormat\": \"%s\"\n", posterFormat));
+		builder.append("  }\n}");
+		return builder.toString();
 	}
+
 }

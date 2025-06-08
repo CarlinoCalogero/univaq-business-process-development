@@ -11,6 +11,7 @@ public class CheckAvailabilityResponse {
 
 	@XmlElement(name = "requestId", namespace = "http://disim.univaq.it/services/postingservice")
 	private String requestId;
+
 	@XmlElement(name = "available", namespace = "http://disim.univaq.it/services/postingservice")
 	private boolean available;
 
@@ -32,13 +33,9 @@ public class CheckAvailabilityResponse {
 
 	@Override
 	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("[Check Availability Response Info]");
-		stringBuilder.append("\n");
-		stringBuilder.append("request id: " + requestId);
-		stringBuilder.append("\n");
-		stringBuilder.append("available: " + available);
-		return stringBuilder.toString();
+		return String.format(
+				"{\n  \"Check Availability Response Info\": {\n    \"requestId\": \"%s\",\n    \"available\": %b\n  }\n}",
+				requestId, available);
 	}
 
 }
