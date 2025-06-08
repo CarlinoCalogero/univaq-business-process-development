@@ -1,0 +1,37 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* full height of viewport */
+  height: 100vh;
+}
+
+.innerContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(231, 231, 231, 0.63);
+  padding: 3rem;
+  border-radius: 0.7rem;
+  gap: 1rem;
+}
+
+.formDiv {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fieldInput {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.buttonDiv {
+  display: flex;
+  justify-content: center;
+}
+
+.submitButton {
+  width: fit-content;
+  padding: 0.3rem;
+}

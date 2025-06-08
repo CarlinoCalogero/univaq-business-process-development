@@ -1,0 +1,96 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* full height of viewport */
+  height: 100vh;
+  gap: 2rem;
+}
+
+.innerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(231, 231, 231, 0.63);
+  padding: 3rem;
+  border-radius: 0.7rem;
+  gap: 1rem;
+  width: 80%;
+}
+
+.boldText {
+  font-weight: bold;
+}
+
+.zonesTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  text-align: center; /* applies to the whole table */
+}
+
+.tableHeader {
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.zonesTable th,
+.zonesTable td {
+  border: 1px solid #757575;
+  padding: 8px;
+}
+
+.zonesTable th {
+  background-color: #bebebe;
+}
+
+.cityCell {
+  font-weight: bold;
+}
+
+.cityCell,
+.zoneCell {
+  background-color: #fafafa;
+}
+
+.buttonDiv {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.buttonDiv button {
+  padding: 0.5rem 0.8rem;
+  color: white;
+  border: none;
+  border-radius: 0.3rem;
+  font-size: 1rem;
+  font-family: "Source Sans Pro", sans-serif;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+}
+
+/* Confirm Button */
+.confirmButton {
+  background-color: #04AA6D;
+  /* W3Schools green */
+}
+
+.confirmButton:hover {
+  background-color: #038e5a;
+}
+
+/* Cancel Button */
+.cancelButton {
+  background-color: #f44336;
+  /* red */
+}
+
+.cancelButton:hover {
+  background-color: #d32f2f;
+}

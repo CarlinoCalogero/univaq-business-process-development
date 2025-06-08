@@ -1,0 +1,39 @@
+{
+  "name": "public-billposting-service",
+  "version": "0.1.0",
+  "main": "main.js",
+  "scripts": {
+    "postinstall": "cd renderer && npm install",
+    "dev": "electron .",
+    "build:next": "cd renderer && npm run build",
+    "build": "electron-builder",
+    "start": "npm run build:next && electron .",
+    "dist": "npm run build:next && electron-builder"
+  },
+  "build": {
+    "appId": "com.yourcompany.publicbillposting",
+    "productName": "Public Billposting Service",
+    "files": [
+      "main.js",
+      "download-node.js",
+      "package.json",
+      "renderer/**/*",
+      "renderer/.next"
+    ],
+    "asar": false,
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    }
+  },
+  "dependencies": {
+    "unzipper": "^0.12.3"
+  },
+  "devDependencies": {
+    "electron": "^36.4.0",
+    "electron-builder": "^26.0.12"
+  }
+}

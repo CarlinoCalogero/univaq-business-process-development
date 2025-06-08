@@ -1,0 +1,27 @@
+.container{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fieldInput {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.entriesOuterDiv{
+  padding-left: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.entriesDiv{
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.singleEntryButton{
+  padding: 0.5rem;
+}
