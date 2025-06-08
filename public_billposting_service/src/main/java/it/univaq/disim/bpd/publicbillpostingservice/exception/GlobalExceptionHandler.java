@@ -12,8 +12,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.fasterxml.jackson.core.JsonParseException;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -51,19 +49,20 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 	}
 
+	// Handles enum deserialization and malformed JSON
 	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public ResponseEntity<ApiError> handleJsonParseError(HttpMessageNotReadableException ex,
-			HttpServletRequest request) {
-		Throwable rootCause = ex.getCause();
-		String detailedMessage = "Malformed JSON request";
-		if (rootCause instanceof JsonParseException) {
-			detailedMessage = "JSON parse error: " + rootCause.getMessage();
+	public ResponseEntity<ApiError> handleInvalidJson(HttpMessageNotReadableException ex, HttpServletRequest request) {
+		String rootCause = ex.getMostSpecificCause().getMessage();
+		String message;
+
+		if (rootCause.contains("from String")) {
+			message = "Invalid input: one of the provided values is not valid. Check enum fields.";
+		} else {
+			message = "Malformed JSON input: " + rootCause;
 		}
 
-		ApiError error = new ApiError(HttpStatus.BAD_REQUEST, "Could not read request: " + detailedMessage,
-				request.getRequestURI(), request.getMethod());
-
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+		ApiError error = new ApiError(HttpStatus.BAD_REQUEST, message, request.getRequestURI(), request.getMethod());
+		return ResponseEntity.badRequest().body(error);
 	}
 
 	@ExceptionHandler(Exception.class)

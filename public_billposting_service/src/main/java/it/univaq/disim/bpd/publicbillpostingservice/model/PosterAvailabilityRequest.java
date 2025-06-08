@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class PosterAvailabilityRequest {
 
@@ -17,6 +18,9 @@ public class PosterAvailabilityRequest {
 
 	@NotBlank(message = "posterFormat is mandatory")
 	private String posterFormat;
+
+	@NotNull(message = "selectionStrategy is mandatory")
+	private ZoneSelectionStrategy selectionStrategy;
 
 	// Default constructor is essential for JSON deserialization by Jackson
 	public PosterAvailabilityRequest() {
@@ -40,6 +44,10 @@ public class PosterAvailabilityRequest {
 		return posterFormat;
 	}
 
+	public ZoneSelectionStrategy getSelectionStrategy() {
+		return selectionStrategy;
+	}
+
 	public void setUsername(String username) {
 		this.username = username;
 	}
@@ -50,6 +58,10 @@ public class PosterAvailabilityRequest {
 
 	public void setPosterFormat(String posterFormat) {
 		this.posterFormat = posterFormat;
+	}
+
+	public void setSelectionStrategy(ZoneSelectionStrategy selectionStrategy) {
+		this.selectionStrategy = selectionStrategy;
 	}
 
 	@Override
