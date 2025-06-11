@@ -35,3 +35,8 @@
   width: fit-content;
   padding: 0.3rem;
 }
+
+.errorMessage {
+  color: red;
+  text-align: center;
+}

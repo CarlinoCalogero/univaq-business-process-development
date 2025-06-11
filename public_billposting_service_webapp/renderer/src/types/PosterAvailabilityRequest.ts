@@ -3,5 +3,6 @@ import { CityPrice } from "./CityPrice"
 export type PosterAvailabilityRequest = {
     username: string,
     citiesAndMaximumPrice: CityPrice[],
-    posterFormat: string
+    posterFormat: string,
+    selectionStrategy: string
 }

@@ -1,5 +1,5 @@
 'use client';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import styles from "./page.module.css";
 import { PosterAvailabilityRequest } from '@/types/PosterAvailabilityRequest';
 import { PosterAvailabilityRequestResponse } from '@/types/PosterAvailabilityRequestResponse';
@@ -7,11 +7,22 @@ import { useRouter } from 'next/navigation';
 import { MutipleSelectInput } from '@/types/MultipleSelectInput';
 import MultipleSelectFieldInput from '@/components/MultipleSelectFieldInput';
 import { DEBUG } from '@/config/config';
+import { ApiError } from '@/types/ApiError';
+
+const ZONE_SELECTION_STRATEGIES = {
+  GREEDY: 'GREEDY',
+  CHEAPEST_FIRST: 'CHEAPEST_FIRST',
+  BEST_VALUE: 'BEST_VALUE',
+  EQUAL_BUDGET: 'EQUAL_BUDGET',
+  RANDOM: 'RANDOM'
+}
 
 
 export default function Home() {
 
   const router = useRouter();
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -21,7 +32,8 @@ export default function Home() {
     const posterAvailabilityRequest: PosterAvailabilityRequest = {
       username: '',
       citiesAndMaximumPrice: [],
-      posterFormat: ''
+      posterFormat: '',
+      selectionStrategy: ZONE_SELECTION_STRATEGIES.GREEDY
     };
 
     for (let [key, value] of formData.entries()) {
@@ -44,6 +56,9 @@ export default function Home() {
           break;
         case 'poster-format':
           posterAvailabilityRequest.posterFormat = value as string;
+          break;
+        case 'zone-selection-strategy':
+          posterAvailabilityRequest.selectionStrategy = value as string;
           break;
       }
     }
@@ -137,7 +152,15 @@ export default function Home() {
         },
       });
 
-      result = await res.json() as PosterAvailabilityRequestResponse;
+      const response = await res.json();
+
+      if ('statusCode' in response) {
+        const error = response as ApiError
+        setErrorMessage(error.message)
+        return
+      }
+
+      result = response as PosterAvailabilityRequestResponse
 
     }
 
@@ -173,6 +196,18 @@ export default function Home() {
             id='poster-format'
             labelText='Poster Format:'
           />
+          <div className={styles.fieldInput}>
+            <label htmlFor={'zone-selection-strategy'}>Zone Selection Strategy:</label>
+            <select name="zone-selection-strategy" id="zone-selection-strategy">
+              {
+                Object.values(ZONE_SELECTION_STRATEGIES).map((selectionStrategy) => <option key={selectionStrategy} value={selectionStrategy}>{selectionStrategy.replace('_', ' ')}</option>)
+              }
+            </select>
+          </div>
+          {
+            errorMessage &&
+            <span className={styles.errorMessage}>{errorMessage}</span>
+          }
           <div className={styles.buttonDiv}>
             <input className={styles.submitButton} type="submit" value="Send Request" />
           </div>
