@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 public class PosterAvailabilityRequest {
 
@@ -17,6 +18,7 @@ public class PosterAvailabilityRequest {
 	private List<CityPrice> citiesAndMaximumPrice;
 
 	@NotBlank(message = "posterFormat is mandatory")
+	@Pattern(regexp = "^\\d+x\\d+$", message = "Format must be [number]x[number], e.g., 100x200")
 	private String posterFormat;
 
 	@NotNull(message = "selectionStrategy is mandatory")
