@@ -12,6 +12,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 
+import it.univaq.disim.bpd.publicbillpostingservice.exception.InvalidRequestException;
 import it.univaq.disim.bpd.publicbillpostingservice.model.CityPrice;
 import it.univaq.disim.bpd.publicbillpostingservice.model.PosterAvailabilityRequest;
 import it.univaq.disim.bpd.publicbillpostingservice.model.Zone;
@@ -55,6 +56,10 @@ public class ZoneSelector extends BaseDelegate implements JavaDelegate {
 		default:
 			// logger.info("Using GREEDY strategy");
 			selectedZonesMap = selectZonesGreedy(allZones, request);
+		}
+		
+		if (selectedZonesMap.isEmpty()) {
+			throw new InvalidRequestException("Error: City not found! Please insert a valid city!");
 		}
 
 		totalPrice = selectedZonesMap.values().stream().flatMap(List::stream).mapToDouble(Zone::getPrice).sum();
