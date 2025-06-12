@@ -1,5 +1,5 @@
 'use client';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, useEffect } from 'react';
 import styles from "./page.module.css";
 import { PosterAvailabilityRequest } from '@/types/PosterAvailabilityRequest';
 import { PosterAvailabilityRequestResponse } from '@/types/PosterAvailabilityRequestResponse';
@@ -23,6 +23,14 @@ export default function Home() {
   const router = useRouter();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  useEffect(() => {
+    window.electronAPI.sendMessage('ping', 'hello');
+
+    window.electronAPI.onMessage('pong', (_event, response) => {
+      console.log('Got reply from main process:', response);
+    });
+  }, []);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

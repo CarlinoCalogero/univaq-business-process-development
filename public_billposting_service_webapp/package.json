@@ -1,28 +1,30 @@
 {
   "name": "public-billposting-service",
   "version": "0.1.0",
-  "main": "main.js",
+  "main": "dist/main.js",
   "scripts": {
-    "postinstall": "cd renderer && npm install",
-    "dev": "electron .",
-    "build:next": "cd renderer && npm run build",
-    "build": "electron-builder",
-    "start": "npm run build:next && electron .",
-    "dist": "npm run build:next && electron-builder"
+    "dev": "npm run start:electron && npm run dev:next",
+    "build": "npm run build:electron && cd renderer && npm run build && cd .. && npm run postbuild",
+    "postbuild": "shx cp -r renderer/.next/static renderer/.next/standalone/.next/static",
+    "dist": "npm run build && electron-builder",
+    "dist:electron": "npm run build:electron && electron-builder",
+    "start:electron": "npm run build:electron && electron dist/main.js",
+    "dev:next": "cd renderer && npm run dev",
+    "build:electron": "tsc -p tsconfig.electron.json"
   },
   "build": {
     "appId": "com.yourcompany.publicbillposting",
     "productName": "Public Billposting Service",
     "files": [
-      "main.js",
-      "download-node.js",
-      "package.json",
-      "renderer/**/*",
-      "renderer/.next"
+      "dist/**/*",
+      "renderer/.next/standalone/**/*",
+      "renderer/public/**/*",
+      "renderer/package.json",
+      "package.json"
     ],
     "asar": false,
     "directories": {
-      "output": "dist"
+      "output": "dist-electron"
     },
     "win": {
       "target": "nsis",
@@ -30,10 +32,16 @@
     }
   },
   "dependencies": {
+    "@electron-toolkit/utils": "^4.0.0",
+    "electron-is-dev": "^3.0.1",
+    "get-port-please": "^3.1.2",
     "unzipper": "^0.12.3"
   },
   "devDependencies": {
     "electron": "^36.4.0",
-    "electron-builder": "^26.0.12"
+    "electron-builder": "^26.0.12",
+    "npm-run-all": "^4.1.5",
+    "shx": "^0.4.0",
+    "typescript": "^5.8.3"
   }
 }

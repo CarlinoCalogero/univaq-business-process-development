@@ -41,6 +41,4 @@ yarn-error.log*
 next-env.d.ts
 
 # build
-/dist
-node.exe
-log.txt
+/dist*
