@@ -1,6 +1,8 @@
 # Univaq Business Process Development - Public Billposting Service
 This repository contains the source code for a university project developed for the **Business Process Development** course at the University of L'Aquila (Univaq). 
 
+## Project Overview
+
 The project implements a **Public Billposting Service**, consisting of a backend service to handle the business logic and a web application frontend for user interaction.
 
 ## Project Structure
